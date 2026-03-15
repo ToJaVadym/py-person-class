@@ -12,17 +12,12 @@ def create_person_list(people_data: list) -> list:
     Person.people.clear()
 
     for p in people_data:
-        Person(p['name'], p['age'])
+        Person(p.get('name'), p.get('age'))
 
-    result_list = []
     for p in people_data:
-        current_person = Person.people[p['name']]
+        current_person = Person.people.get(p.get('name'))
+        if current_person:
+            spouse_name = p.get('wife') or p.get('husband')
+            current_person.spouse = Person.people.get(spouse_name)
 
-        spouse_name = p.get('wife') or p.get('husband')
-
-        if spouse_name and spouse_name in Person.people:
-            current_person.spouse = Person.people[spouse_name]
-
-        result_list.append(current_person)
-
-    return result_list
+    return [Person.people.get(p.get('name')) for p in people_data]
